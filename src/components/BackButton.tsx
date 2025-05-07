@@ -8,7 +8,7 @@ export function BackButton() {
 
 	return (
 		<button
-			className="text-blue-500 cursor-pointer absolute left-0 top-0"
+			className="text-blue-500 cursor-pointer absolute left-4 top-0"
 			onClick={e => {
 				e.preventDefault();
 
