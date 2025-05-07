@@ -1,3 +1,5 @@
+'use client';
+
 import { PropsWithChildren } from 'react';
 import { usePathname } from 'next/navigation';
 import NextLink, { LinkProps } from 'next/link';
@@ -12,7 +14,7 @@ export function Link(props: PropsWithChildren<LinkProps>) {
 	const { href, replace, children, scroll, ...restProps } = props;
 
 	function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
-		// If onClick is passed, it is executed
+		// If onClick prop is passed, it is executed
 		if (props.onClick) {
 			props.onClick(e);
 		}
