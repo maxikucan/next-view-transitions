@@ -48,11 +48,11 @@ export function slideOut() {
 	document.documentElement.animate(
 		[
 			{
-				opacity: 0,
+				opacity: 1,
 				transform: 'translate(0, 0)'
 			},
 			{
-				opacity: 1,
+				opacity: 0,
 				transform: 'translate(100%, 0)'
 			}
 		],
@@ -67,11 +67,11 @@ export function slideOut() {
 	document.documentElement.animate(
 		[
 			{
-				opacity: 1,
+				opacity: 0,
 				transform: 'translate(-100%, 0)'
 			},
 			{
-				opacity: 0,
+				opacity: 1,
 				transform: 'translate(0, 0)'
 			}
 		],

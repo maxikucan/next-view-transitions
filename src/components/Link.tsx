@@ -28,7 +28,7 @@ export function Link(props: PropsWithChildren<LinkProps>) {
 			e.preventDefault();
 
 			const navigate = replace ? router.replace : router.push;
-			navigate(href as string, { onTransitionReady: slideIn });
+			navigate(href as string, { onTransition: slideIn });
 		}
 	}
 

@@ -1,15 +1,13 @@
+import { startTransition, useEffect, useState } from 'react';
 import { useRouter as useNextRouter } from 'next/navigation';
-import { startTransition, useCallback, useEffect, useMemo, useState } from 'react';
 
 export type TransitionOptions = {
-	onTransitionReady?: () => void;
+	onTransition?: () => void;
 };
 
-type NavigateOptionsWithTransition = TransitionOptions;
-
 export type TransitionRouter = {
-	push: (href: string, options?: NavigateOptionsWithTransition) => void;
-	replace: (href: string, options?: NavigateOptionsWithTransition) => void;
+	push: (href: string, options?: TransitionOptions) => void;
+	replace: (href: string, options?: TransitionOptions) => void;
 	back: (transition: TransitionOptions) => void;
 };
 
@@ -17,7 +15,7 @@ export function useTransitionRouter() {
 	const router = useNextRouter();
 	const [finishViewTransition, setFinishViewTransition] = useState<null | (() => void)>(null);
 
-	const triggerTransition = useCallback((callBack: () => void, { onTransitionReady }: TransitionOptions = {}) => {
+	function triggerTransition(callBack: () => void, { onTransition }: TransitionOptions = {}) {
 		if ('startViewTransition' in document) {
 			const transition = document.startViewTransition(
 				() =>
@@ -30,55 +28,39 @@ export function useTransitionRouter() {
 					})
 			);
 
-			if (onTransitionReady) {
-				transition.ready.then(onTransitionReady);
+			if (onTransition) {
+				transition.ready.then(onTransition);
 			}
 		} else {
 			return callBack();
 		}
-	}, []);
+	}
 
-	const push = useCallback(
-		(href: string, { onTransitionReady, ...options }: NavigateOptionsWithTransition = {}) => {
-			triggerTransition(() => router.push(href, options), {
-				onTransitionReady
-			});
-		},
-		[triggerTransition, router]
-	);
+	function push(href: string, { onTransition, ...options }: TransitionOptions = {}) {
+		triggerTransition(() => router.push(href, options), {
+			onTransition
+		});
+	}
 
-	const replace = useCallback(
-		(href: string, { onTransitionReady, ...options }: NavigateOptionsWithTransition = {}) => {
-			triggerTransition(() => router.replace(href, options), {
-				onTransitionReady
-			});
-		},
-		[triggerTransition, router]
-	);
+	function replace(href: string, { onTransition, ...options }: TransitionOptions = {}) {
+		triggerTransition(() => router.replace(href, options), {
+			onTransition
+		});
+	}
 
-	const back = useCallback(
-		({ onTransitionReady }: NavigateOptionsWithTransition = {}) => {
-			triggerTransition(() => router.back(), {
-				onTransitionReady
-			});
-		},
-		[triggerTransition, router]
-	);
+	function back({ onTransition }: TransitionOptions = {}) {
+		triggerTransition(() => router.back(), {
+			onTransition
+		});
+	}
 
 	useEffect(() => {
 		if (finishViewTransition) {
 			finishViewTransition();
+
 			setFinishViewTransition(null);
 		}
 	}, [finishViewTransition]);
 
-	return useMemo<TransitionRouter>(
-		() => ({
-			...router,
-			push,
-			replace,
-			back
-		}),
-		[push, replace, back, router]
-	);
+	return { ...router, push, replace, back };
 }

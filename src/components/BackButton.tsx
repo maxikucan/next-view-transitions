@@ -12,7 +12,7 @@ export function BackButton() {
 			onClick={e => {
 				e.preventDefault();
 
-				router.back({ onTransitionReady: slideOut });
+				router.back({ onTransition: slideOut });
 			}}>
 			Back
 		</button>
