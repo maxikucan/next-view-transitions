@@ -9,7 +9,7 @@ export function Link(props: PropsWithChildren<LinkProps>) {
 	const router = useTransitionRouter();
 	const pathname = usePathname();
 
-	const { href, replace, children, ...restProps } = props;
+	const { href, replace, children, scroll, ...restProps } = props;
 
 	function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
 		// If onClick is passed, it is executed
@@ -28,7 +28,7 @@ export function Link(props: PropsWithChildren<LinkProps>) {
 			e.preventDefault();
 
 			const navigate = replace ? router.replace : router.push;
-			navigate(href as string, { onTransition: slideIn });
+			navigate(href as string, { scroll: scroll, onTransition: slideIn });
 		}
 	}
 
