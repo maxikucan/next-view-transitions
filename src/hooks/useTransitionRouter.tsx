@@ -1,6 +1,10 @@
+'use client';
+
 import { startTransition, useEffect, useState } from 'react';
 import { useRouter as useNextRouter } from 'next/navigation';
 import type { NavigateOptions } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+
+import { useMediaQuery } from './useMediaQuery';
 
 export type TransitionOptions = {
 	onTransition?: () => void;
@@ -22,10 +26,12 @@ export type TransitionRouter = {
  */
 export function useTransitionRouter(): TransitionRouter {
 	const router = useNextRouter();
+	const isDesktop = useMediaQuery('min.desktop');
+
 	const [finishViewTransition, setFinishViewTransition] = useState<null | (() => void)>(null);
 
 	function triggerTransition(callBack: () => void, { onTransition }: TransitionOptions = {}) {
-		if ('startViewTransition' in document) {
+		if ('startViewTransition' in document && !isDesktop) {
 			const transition = document.startViewTransition(
 				() =>
 					new Promise<void>(resolve => {
