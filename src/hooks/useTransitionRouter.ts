@@ -1,4 +1,6 @@
-import { startTransition, useEffect, useState } from 'react';
+'use client';
+
+import { useEffect, useState } from 'react';
 import { useRouter as useNextRouter } from 'next/navigation';
 import type { NavigateOptions } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
@@ -24,40 +26,34 @@ export function useTransitionRouter(): TransitionRouter {
 	const router = useNextRouter();
 	const [finishViewTransition, setFinishViewTransition] = useState<null | (() => void)>(null);
 
-	function triggerTransition(callBack: () => void, { onTransition }: TransitionOptions = {}) {
+	function triggerTransition(navigate: () => void, { onTransition }: TransitionOptions = {}): void {
 		if ('startViewTransition' in document) {
-			const transition = document.startViewTransition(
-				() =>
-					new Promise<void>(resolve => {
-						startTransition(() => {
-							callBack();
+			const transition = document.startViewTransition();
 
-							setFinishViewTransition(() => resolve);
-						});
-					})
-			);
+			transition.ready.then(() => {
+				if (onTransition) {
+					onTransition();
+				}
 
-			if (onTransition) {
-				transition.ready.then(onTransition);
-			}
+				navigate();
+			});
 		} else {
-			return callBack();
+			navigate();
 		}
 	}
-
-	function push(href: string, { onTransition, ...options }: TransitionOptions = {}) {
+	function push(href: string, { onTransition, ...options }: TransitionOptions = {}): void {
 		triggerTransition(() => router.push(href, options), {
 			onTransition
 		});
 	}
 
-	function replace(href: string, { onTransition, ...options }: TransitionOptions = {}) {
+	function replace(href: string, { onTransition, ...options }: TransitionOptions = {}): void {
 		triggerTransition(() => router.replace(href, options), {
 			onTransition
 		});
 	}
 
-	function back({ onTransition }: TransitionOptions = {}) {
+	function back({ onTransition }: TransitionOptions = {}): void {
 		triggerTransition(() => router.back(), {
 			onTransition
 		});
