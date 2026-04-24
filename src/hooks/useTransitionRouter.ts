@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useRouter as useNextRouter } from 'next/navigation';
 import type { NavigateOptions } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { useViewTransitionsContext } from '@/contexts/ViewTransitionsContext';
 
 export type TransitionOptions = {
 	onTransition?: () => void;
@@ -24,22 +24,24 @@ export type TransitionRouter = {
  */
 export function useTransitionRouter(): TransitionRouter {
 	const router = useNextRouter();
-	const [finishViewTransition, setFinishViewTransition] = useState<null | (() => void)>(null);
+	const { setFinishViewTransition } = useViewTransitionsContext();
 
 	function triggerTransition(navigate: () => void, { onTransition }: TransitionOptions = {}): void {
-		if ('startViewTransition' in document) {
-			const transition = document.startViewTransition();
-
-			transition.ready.then(() => {
-				if (onTransition) {
-					onTransition();
-				}
-
-				navigate();
-			});
-		} else {
+		if (!('startViewTransition' in document)) {
 			navigate();
+			return;
 		}
+
+		const transition = document.startViewTransition(async () => {
+			navigate();
+			await new Promise<void>(resolve => {
+				setFinishViewTransition(resolve);
+			});
+		});
+
+		transition.ready.then(() => {
+			onTransition?.();
+		});
 	}
 	function push(href: string, { onTransition, ...options }: TransitionOptions = {}): void {
 		triggerTransition(() => router.push(href, options), {
@@ -58,14 +60,6 @@ export function useTransitionRouter(): TransitionRouter {
 			onTransition
 		});
 	}
-
-	useEffect(() => {
-		if (finishViewTransition) {
-			finishViewTransition();
-
-			setFinishViewTransition(null);
-		}
-	}, [finishViewTransition]);
 
 	return { ...router, push, replace, back };
 }

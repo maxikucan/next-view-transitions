@@ -4,9 +4,7 @@ export default function Home() {
 			<h2 className="text-xl font-bold">Home page</h2>
 
 			<p className="p-4 m-4 md:m-16 tracking-wide">
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi dolorem obcaecati dolorum voluptas neque nemo perferendis non sunt quasi?
-				Velit, ipsa atque blanditiis, beatae reprehenderit nesciunt est molestiae porro harum voluptatibus laboriosam sed adipisci! Facere cumque ab
-				nesciunt, pariatur ea, harum repellendus officiis vero, eveniet voluptatem voluptatum repellat mollitia dicta!
+				This is a basic home page. It serves as the starting point for navigating to the About and Contact pages, where you can see the view transitions in action. Feel free to explore the other pages to experience the smooth transitions between them!
 			</p>
 		</div>
 	);

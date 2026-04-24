@@ -2,8 +2,8 @@ import { Link } from './Link';
 
 const navItems = [
 	{ path: '/', name: 'Home' },
-	{ path: '/about', name: 'About' },
-	{ path: '/contact', name: 'Contact' }
+	{ path: '/static', name: 'Static' },
+	{ path: '/dynamic', name: 'Dynamic' }
 ];
 
 export function NavBar() {
