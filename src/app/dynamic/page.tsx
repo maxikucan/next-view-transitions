@@ -1,8 +1,10 @@
 import { BackButton } from '@/components/BackButton';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Dynamic() {
 	// Simulate a delay to demonstrate the view transition with async data fetching
-	await new Promise(resolve => setTimeout(resolve, 1000));
+	await new Promise(resolve => setTimeout(resolve, 1500));
 
 	return (
 		<div className="flex flex-col items-center justify-center mt-4 relative">
